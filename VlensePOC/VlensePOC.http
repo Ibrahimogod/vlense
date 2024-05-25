@@ -1,0 +1,89 @@
+@VlensePOC_HostAddress = http://localhost:5268
+
+#failed request (IsSuccess: False)
+POST {{VlensePOC_HostAddress}}/steps/front
+Accept: application/json
+Content-Type: application/json
+
+{
+  "FirstName": "Ibrahim",
+  "LastName": "Ahmed Badr",
+  "NationalId": "33435465843254",
+  "StepType": "Front",
+  "IsSuccess": false
+}
+
+###
+
+#Get Data afte faild request returns 404 cause no success data found
+GET {{VlensePOC_HostAddress}}/steps/{{add parent step id genereated at the first Request}}
+Accept: application/json
+
+###
+
+#Success request (IsSuccess: True) 
+#need to add generated Id to ParentStepId 
+#to make relation between inital request and any further requests
+
+POST {{VlensePOC_HostAddress}}/steps/front
+Accept: application/json
+Content-Type: application/json
+
+{
+  "FirstName": "Ibrahim",
+  "LastName": "Ahmed Badr",
+  "NationalId": "33435465843254",
+  "StepType": "Front",
+  "IsSuccess": true,
+  "ParentStepId": "{{add parent step id genereated at the first Request}}"
+}
+
+###
+
+#Get Data afte faild request returns 200 with success false cause data not completed
+GET {{VlensePOC_HostAddress}}/steps/{{add parent step id genereated at the first Request}}
+Accept: application/json
+
+###
+
+#Failed back Request isSuccess: false
+POST {{VlensePOC_HostAddress}}/steps/back
+Accept: application/json
+Content-Type: application/json
+
+{
+  "jobName": "Software Developer",
+  "ParentStepId": "{{add parent step id genereated at the first Request}}",
+  "StepType": "Back",
+  "isSuccess": false
+}
+
+###
+
+#Get Data afte faild back request returns 200 with success false cause back data not completed
+GET {{VlensePOC_HostAddress}}/steps/{{add parent step id genereated at the first Request}}
+Accept: application/json
+
+###
+
+#Success back Request isSuccess: true
+POST {{VlensePOC_HostAddress}}/steps/back
+Accept: application/json
+Content-Type: application/json
+
+{
+  "jobName": "Software Developer",
+  "ParentStepId": "{{add parent step id genereated at the first Request}}",
+  "StepType": "Back",
+  "isSuccess": true
+}
+
+###
+
+#Get Data afte faild back request returns 200 with success true cause all data completed
+GET {{VlensePOC_HostAddress}}/steps/{{add parent step id genereated at the first Request}}
+Accept: application/json
+
+###
+
+
